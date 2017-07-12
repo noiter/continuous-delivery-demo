@@ -10,12 +10,12 @@ timeout(60) {
     def workspace = env.WORKSPACE
     def buildUrl = env.BUILD_URL
 
-    // def mvnHome = tool 'Maven 3.3.1'
     // env.JAVA_HOME = tool 'jdk-8-oracle'
     // env.PATH = "${env.JAVA_HOME}/bin:${mvnHome}/bin:${env.PATH}"
+    def JAVA_JDK = '/apps/tools/jdk1.8.0_131'
     def MAVEN_PATH = '/apps/tools/apache-maven-3.3.9'
 
-    withEnv(["PATH+MAVEN=$MAVEN_PATH/bin"]) {
+    withEnv(["PATH+JDK=$JAVA_JDK/bin", "PATH+MAVEN=$MAVEN_PATH/bin"]) {
       // PRINT ENVIRONMENT TO JOB
       echo "workspace directory is $workspace"
       echo "build URL is $buildUrl"
@@ -33,11 +33,11 @@ timeout(60) {
         }
 
         stage('Build') {
-          sh "mvn clean package"
+          sh "$MAVEN_PATH/bin/mvn clean package"
         }
 
         stage('Unit-Tests') {
-          sh "mvn test -Dmaven.test.failure.ignore"
+          sh "$MAVEN_PATH/bin/mvn test -Dmaven.test.failure.ignore"
           step([
             $class     : 'JUnitResultArchiver',
             testResults: 'angular-spring-boot-webapp/target/surefire-reports/TEST*.xml'
@@ -45,11 +45,11 @@ timeout(60) {
         }
 
         stage('Integration-Tests') {
-          node('mac') {
-            env.JAVA_HOME = '/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre'
-
+          node {
+            // env.JAVA_HOME = '/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre'
+            
             checkout scm
-            sh "mvn -Pdocker -Ddocker.host=tcp://127.0.0.1:2375 clean verify -Dmaven.test.failure.ignore"
+            sh "$MAVEN_PATH/bin/mvn -Pdocker -Ddocker.host=tcp://127.0.0.1:2375 clean verify -Dmaven.test.failure.ignore"
             step([
               $class     : 'ArtifactArchiver',
               artifacts  : '**/target/*.jar',
