@@ -10,10 +10,10 @@ timeout(60) {
     def workspace = env.WORKSPACE
     def buildUrl = env.BUILD_URL
 
-    def JAVA_JDK_8='/apps/tools/jdk1.8.0_131'
+    def JAVA_JDK_8='/opt/jdk1.8.0_131'
     echo "Testing with Java $JAVA_JDK_8"
     
-    def MAVEN_3='/apps/tools/apache-maven-3.3.9'
+    def MAVEN_3='/opt/apache-maven-3.3.9'
     echo "Testing with Maven $MAVEN_3"
 
     withEnv(["Path+JDK=$JAVA_JDK_8/bin","Path+MAVEN=$MAVEN_3/bin","JAVA_HOME=$JAVA_JDK_8"]) {
