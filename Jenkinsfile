@@ -77,7 +77,7 @@ timeout(60) {
         // }
 
       } catch (e) {
-        rocketSend channel: 'holi-demos', emoji: ':rotating_light:', message: 'Fehler'
+        // rocketSend channel: 'holi-demos', emoji: ':rotating_light:', message: 'Fehler'
         throw e
       }
     }
