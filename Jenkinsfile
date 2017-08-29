@@ -27,9 +27,9 @@ timeout(60) {
       sh 'mvn -version'
 
       try {
-        stage('Clean workspace') {
-          deleteDir()
-        }
+        // stage('Clean workspace') {
+        //   deleteDir()
+        // }
 
         stage('Checkout') {
           checkout scm
@@ -38,7 +38,7 @@ timeout(60) {
         stage('Build') {
           pom = readMavenPom file: 'pom.xml'
           echo pom.version
-          sh "mvn clean package"
+          // sh "mvn clean package"
         }
 
         // stage('Unit-Tests') {
