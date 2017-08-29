@@ -36,42 +36,44 @@ timeout(60) {
         }
 
         stage('Build') {
+          pom = readMavenPom file: 'pom.xml'
+          echo pom.version
           sh "mvn clean package"
         }
 
-        stage('Unit-Tests') {
-          sh "mvn test -Dmaven.test.failure.ignore"
-          step([
-            $class     : 'JUnitResultArchiver',
-            testResults: 'angular-spring-boot-webapp/target/surefire-reports/TEST*.xml'
-          ])
-        }
+        // stage('Unit-Tests') {
+        //   sh "mvn test -Dmaven.test.failure.ignore"
+        //   step([
+        //     $class     : 'JUnitResultArchiver',
+        //     testResults: 'angular-spring-boot-webapp/target/surefire-reports/TEST*.xml'
+        //   ])
+        // }
 
-        stage('Integration-Tests') {
-          node {
-            // env.JAVA_HOME = '/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre'
+        // stage('Integration-Tests') {
+        //   node {
+        //     // env.JAVA_HOME = '/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre'
             
-            checkout scm
-            sh "mvn -Pdocker -Ddocker.host=tcp://127.0.0.1:2375 clean verify -Dmaven.test.failure.ignore"
-            step([
-              $class     : 'ArtifactArchiver',
-              artifacts  : '**/target/*.jar',
-              fingerprint: true
-            ])
-            step([
-              $class     : 'JUnitResultArchiver',
-              testResults: 'angular-spring-boot-webapp/target/failsafe-reports/TEST*.xml'
-            ])
-            publishHTML(target: [
-              reportDir            : 'angular-spring-boot-webapp/target/site/serenity/',
-              reportFiles          : 'index.html',
-              reportName           : 'Serenity Test Report',
-              keepAll              : true,
-              alwaysLinkToLastBuild: true,
-              allowMissing         : false
-            ])
-          }
-        }
+        //     checkout scm
+        //     sh "mvn -Pdocker -Ddocker.host=tcp://127.0.0.1:2375 clean verify -Dmaven.test.failure.ignore"
+        //     step([
+        //       $class     : 'ArtifactArchiver',
+        //       artifacts  : '**/target/*.jar',
+        //       fingerprint: true
+        //     ])
+        //     step([
+        //       $class     : 'JUnitResultArchiver',
+        //       testResults: 'angular-spring-boot-webapp/target/failsafe-reports/TEST*.xml'
+        //     ])
+        //     publishHTML(target: [
+        //       reportDir            : 'angular-spring-boot-webapp/target/site/serenity/',
+        //       reportFiles          : 'index.html',
+        //       reportName           : 'Serenity Test Report',
+        //       keepAll              : true,
+        //       alwaysLinkToLastBuild: true,
+        //       allowMissing         : false
+        //     ])
+        //   }
+        // }
 
       } catch (e) {
         rocketSend channel: 'holi-demos', emoji: ':rotating_light:', message: 'Fehler'
