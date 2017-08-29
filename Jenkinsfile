@@ -24,7 +24,7 @@ timeout(60) {
       echo "branch name is $branchName"
       echo "PATH is $env.PATH"
       sh 'java -version'
-      sh 'mvn -version'
+      // sh 'mvn -version'
 
       try {
         // stage('Clean workspace') {
