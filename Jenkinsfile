@@ -36,8 +36,9 @@ timeout(60) {
         }
 
         stage('Build') {
-          pom = readMavenPom file: 'pom.xml'
-          echo pom.version
+          def project = new XmlSlurper().parseText(readFile('pom.xml'))
+          def pomv = project.version.text()
+          echo pomv
           // sh "mvn clean package"
         }
 
