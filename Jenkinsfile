@@ -35,9 +35,22 @@ timeout(60) {
           checkout scm
         }
 
+        stage("Set Version") {
+          def originalVersion = version();
+          def major = originalVersion[1];
+          def minor = originalVersion[2];
+          def patch  = Integer.parseInt(originalVersion[3]) + 1;
+          def v = "${major}.${minor}.${patch}"
+          if (v) {
+            echo "Building version ${v}"
+          }
+          // sh "mvn -B versions:set -DgenerateBackupPoms=false -DnewVersion=${v}"
+          // sh 'git add .'
+          // sh "git commit -m 'Raise version'"
+          // sh "git tag v${v}"
+        }
+
         stage('Build') {
-          def version = version()
-          echo version[0]
           // sh "mvn clean package"
         }
 
