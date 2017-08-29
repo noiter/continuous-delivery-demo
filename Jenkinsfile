@@ -36,9 +36,8 @@ timeout(60) {
         }
 
         stage('Build') {
-          def project = new XmlSlurper().parseText(readFile('pom.xml'))
-          def pomv = project.version.text()
-          echo pomv
+          def version = version()
+          echo version
           // sh "mvn clean package"
         }
 
@@ -81,5 +80,10 @@ timeout(60) {
         throw e
       }
     }
+  }
+  
+  def version() {
+    def matcher = readFile('pom.xml') =~ '<version>(\\d*)\\.(\\d*)\\.(\\d*)(-SNAPSHOT)*</version>'
+    matcher ? matcher[0] : null
   }
 }
