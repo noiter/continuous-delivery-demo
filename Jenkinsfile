@@ -37,7 +37,7 @@ timeout(60) {
 
         stage('Build') {
           def version = version()
-          echo version
+          echo version[0]
           // sh "mvn clean package"
         }
 
